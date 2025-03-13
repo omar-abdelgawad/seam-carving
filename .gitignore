@@ -1,5 +1,28 @@
 # custom
+# Output directories and images
+output/
+*_resized.jpg
+*_seams.jpg
+*_standard.jpg
+*_optimized.jpg
+*_downscaled.jpg
+*_standard_seams.jpg
+*_optimized_seams.jpg
+*_downscaled_seams.jpg
 
+# Sample images directory
+examples/images/
+
+# Large files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.tif
+*.tiff
+# But include README images
+!docs/images/*.jpg
+!docs/images/*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
