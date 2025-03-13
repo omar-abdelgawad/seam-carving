@@ -6,20 +6,20 @@ build-backend = "setuptools.build_meta"
 #where = ["src"]  # list of folders that contain the packages (["."] by default)
 
 [project]
-name = "mypackagename"
+name = "seam-carving"
 dynamic = ["version"]
 dependencies = [
-    "requests"
+    "numpy",
+    "pillow",
     ]
 requires-python = ">=3.8"
 authors = [
-  {name = "Omar Abdelgawad", email = "pradyun@example.com"},
-  {name = "Tzu-Ping Chung", email = "tzu-ping@example.com"},
+  {name = "Student Name", email = "student@example.com"},
 ]
-description = "A package for image to image translation using GANs"
+description = "Seam carving algorithm for content-aware image resizing"
 readme = "README.md"
 license = {file = "LICENSE"}
-keywords = ["image-to-image-translation", "GAN", "vision", "deep-learning"]
+keywords = ["seam-carving", "image-processing", "image-resizing", "content-aware"]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.8",
@@ -38,15 +38,14 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
-firstpkg = ["py.typed"]
-secondpkg = ["py.typed"]
+seam_carving = ["py.typed"]
 
 [project.urls]
-Repository = "https://github.com/me/spam.git"
+Repository = "https://github.com/student/seam-carving.git"
 
 ###################################################################################################
 [tool.pytest.ini_options]
-addopts = "--cov=firstpkg --cov=secondpkg" #include all packages under src directory
+addopts = "--cov=seam_carving"
 testpaths = [
     "tests",
 ]
@@ -70,3 +69,7 @@ src = ["src"]
 
 [tool.ruff.lint]
 extend-select = ["UP","I"]
+
+# version set in a separate file
+[tool.setuptools.dynamic]
+version = {attr = "seam_carving.__version__"}
