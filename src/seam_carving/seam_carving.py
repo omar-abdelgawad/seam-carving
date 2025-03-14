@@ -205,33 +205,6 @@ def remove_seam(
     return result
 
 
-def remove_seams(
-    image: np.ndarray, seams: List[np.ndarray], direction: str = "vertical"
-) -> np.ndarray:
-    """
-    Remove multiple seams from the image.
-
-    Args:
-        image: A numpy array representing the image (height, width, channels)
-        seams: A list of seams to remove
-        direction: 'vertical' for vertical seams, 'horizontal' for horizontal seams
-
-    Returns:
-        A numpy array representing the image with all seams removed
-    """
-    if not seams:
-        return image
-
-    # Create a copy of the image to work with
-    result = np.copy(image)
-
-    # Process one seam at a time
-    for seam in seams:
-        result = remove_seam(result, seam, direction)
-
-    return result
-
-
 def visualize_seams(
     image: np.ndarray, seams: List[np.ndarray], direction: str = "vertical"
 ) -> np.ndarray:

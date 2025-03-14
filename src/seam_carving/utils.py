@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 
-def load_image(image_path) -> Tuple[np.ndarray, Tuple[int, int]]:
+def load_image(image_path: str) -> Tuple[np.ndarray, Tuple[int, int]]:
     img = Image.open(image_path)
     # get original image dimensions
     orig_dims = img.size

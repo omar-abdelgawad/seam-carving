@@ -6,9 +6,9 @@ import numpy as np
 
 from seam_carving import (
     calculate_energy,
-    remove_seams,
     seam_carve,
 )
+from seam_carving.seam_carving import remove_seam
 
 
 def test_calculate_energy():
@@ -33,7 +33,7 @@ def test_seam_removal_vertical():
     seam = np.array([2, 2, 2, 2, 2])  # Remove middle column
 
     # Remove the seam
-    result = remove_seams(image, [seam], direction="vertical")
+    result = remove_seam(image, seam, direction="vertical")
 
     # Check that the result has one fewer column
     assert result.shape == (5, 4)
@@ -48,7 +48,7 @@ def test_seam_removal_horizontal():
     seam = np.array([2, 2, 2, 2, 2])  # Remove middle row
 
     # Remove the seam
-    result = remove_seams(image, [seam], direction="horizontal")
+    result = remove_seam(image, seam, direction="horizontal")
 
     # Check that the result has one fewer row
     assert result.shape == (4, 5)

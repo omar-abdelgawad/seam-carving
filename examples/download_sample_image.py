@@ -4,9 +4,10 @@ Download a sample landscape image for testing the seam carving algorithm.
 """
 
 import os
+from io import BytesIO
+
 import requests
 from PIL import Image
-from io import BytesIO
 
 # URL of a sample landscape image (from Pexels.com, under free license)
 sample_image_url = "https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg"
