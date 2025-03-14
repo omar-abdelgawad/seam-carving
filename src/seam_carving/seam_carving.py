@@ -16,10 +16,8 @@ import numpy as np
 def calculate_energy(image: np.ndarray) -> np.ndarray:
     """
     Calculate the energy of an image using gradient magnitude.
-
     Args:
         image: A numpy array representing the image (height, width, channels)
-
     Returns:
         A 2D numpy array representing the energy at each pixel
     """
@@ -75,6 +73,7 @@ def compute_cumulative_energy_map(
 
     height, width = energy.shape
     cumulative_energy = np.copy(energy)
+
     # Fill the cumulative energy map
     for i in range(1, height):
         left = np.roll(cumulative_energy[i - 1], 1)
@@ -83,7 +82,6 @@ def compute_cumulative_energy_map(
         right[-1] = 2**15 - 1
         center = cumulative_energy[i - 1]
         cumulative_energy[i] += np.minimum(center, np.minimum(left, right))
-
     # Transpose back if we're finding horizontal seams
     if direction == "horizontal":
         cumulative_energy = cumulative_energy.T
@@ -324,7 +322,9 @@ def seam_carve(
             energy = calculate_energy(result)
 
             # Compute cumulative energy map
-            cumulative_energy = compute_cumulative_energy_map(energy, "vertical")
+            cumulative_energy = np.array(
+                compute_cumulative_energy_map(energy, "vertical")
+            )
 
             # Find the optimal seam
             seam = find_optimal_seam(cumulative_energy, "vertical")

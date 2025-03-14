@@ -64,6 +64,11 @@ The above command will:
 3. Save the resized image to output/landscape_resized.jpg
 4. Save a visualization of the removed seams to output/landscape_seams.jpg
 
+### Profiling
+```bash
+python3 profile_1.py examples/images/landscape.jpg output/landscape_resized.jpg --width 600 --height 500 --vis_output output/landscape_seams.jpg
+```
+
 ### Additional Options
 
 ```bash
