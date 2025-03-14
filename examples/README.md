@@ -84,7 +84,7 @@ python3 performance_optimization.py images/landscape.jpg
 **Options:**
 
 - `--output_dir`: Directory to save output images (default: "output")
-- `--scale_factor`: Scale factor for width and height (0.0-1.0, default: 0.5)
+- `--scale`: Scale factor for width and height (0.0-1.0, default: 0.5)
 
 **Key Optimization Strategies:**
 

@@ -23,14 +23,6 @@ The implementation satisfies the following lab requirements:
    - The resized image (after seam removal)
    - A visualization of the seams that were removed (overlaid in red on the original image)
 
-## Performance
-
-The implementation employs:
-
-- Dynamic programming for efficient seam finding
-- Gradient-based energy calculation
-- Separate handling of vertical and horizontal seams
-
 ## Requirements
 
 - Python 3.8 or higher
@@ -148,13 +140,6 @@ python3 examples/advanced_seam_carving.py examples/images/landscape.jpg
 - `--vertical_only`: Only perform vertical seam carving (width reduction)
 - `--horizontal_only`: Only perform horizontal seam carving (height reduction)
 
-### 4. Performance Optimization
-
-Compares different performance optimization strategies for seam carving.
-
-```bash
-python3 examples/performance_optimization.py examples/images/landscape.jpg
-```
 
 **Features:**
 
@@ -168,7 +153,7 @@ python3 examples/performance_optimization.py examples/images/landscape.jpg
 **Options:**
 
 - `--output_dir`: Directory to save output images (default: "output")
-- `--scale_factor`: Scale factor for width and height (0.0-1.0, default: 0.5)
+- `--scale`: Scale factor for width and height (0.0-1.0, default: 0.5)
 
 **Key Optimization Strategies:**
 
@@ -187,6 +172,3 @@ The seam carving algorithm follows these steps:
 
 The algorithm can reduce both width (by removing vertical seams) and height (by removing horizontal seams).
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.

@@ -28,7 +28,16 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["mypy", "ruff", "pytest", "pytest-cov", "tox", "pre-commit", "snakeviz"]
+dev = [
+  "mypy",
+  "ruff",
+  "pytest",
+  "pytest-cov",
+  "tox",
+  "pre-commit",
+  "snakeviz",
+  "requests",
+]
 
 [tool.setuptools.package-data]
 seam_carving = ["py.typed"]
