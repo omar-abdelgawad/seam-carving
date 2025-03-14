@@ -13,6 +13,9 @@ output/
 # Sample images directory
 examples/images/
 
+# profiling
+profile.stats
+
 # Large files
 *.jpg
 *.jpeg

@@ -51,7 +51,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def get_target_dimensions(
-    image: np.ndarray, width: int = None, height: int = None, scale: float = None
+    image: np.ndarray,
+    width: "int | None" = None,
+    height: "int | None" = None,
+    scale: "float | None" = None,
 ) -> Tuple[int, int]:
     """
     Calculate target dimensions based on command-line arguments.
@@ -99,7 +102,7 @@ def main() -> None:
 
     # Load the input image
     print(f"Loading image: {args.input_image}")
-    image = load_image(args.input_image)
+    image, orig_dims = load_image(args.input_image)
 
     # Get target dimensions
     target_width, target_height = get_target_dimensions(
@@ -107,8 +110,10 @@ def main() -> None:
     )
 
     # Print dimensions
-    original_height, original_width = image.shape[:2]
+    original_width, original_height = orig_dims
+    resized_height, resized_width = image.shape[:2]
     print(f"Original dimensions: {original_width}x{original_height}")
+    print(f"Resized dimensions: {resized_width}x{resized_height}")
     print(f"Target dimensions: {target_width}x{target_height}")
 
     # Perform seam carving

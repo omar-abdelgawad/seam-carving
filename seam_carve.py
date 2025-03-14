@@ -6,7 +6,7 @@ This script runs the seam carving algorithm to resize images while preserving
 important content.
 """
 
-from src.seam_carving.cli import main
+from seam_carving.cli import main
 
 if __name__ == "__main__":
     main()

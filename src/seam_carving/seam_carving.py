@@ -31,7 +31,7 @@ def calculate_energy(image: np.ndarray) -> np.ndarray:
     else:
         gray_image = image
 
-    gray_image = gray_image.astype(np.int32)
+    gray_image = gray_image.astype(np.int16)
     # Calculate x gradient using forward and backward differences at the edges
     # and central differences elsewhere
     grad_x = np.zeros_like(gray_image)
@@ -76,25 +76,31 @@ def compute_cumulative_energy_map(
 
     height, width = energy.shape
     cumulative_energy = np.copy(energy)
-
     # Fill the cumulative energy map
     for i in range(1, height):
-        for j in range(width):
-            # Find the minimum energy from the three pixels above
-            if j == 0:  # leftmost pixel
-                cumulative_energy[i, j] += min(
-                    cumulative_energy[i - 1, j], cumulative_energy[i - 1, j + 1]
-                )
-            elif j == width - 1:  # rightmost pixel
-                cumulative_energy[i, j] += min(
-                    cumulative_energy[i - 1, j - 1], cumulative_energy[i - 1, j]
-                )
-            else:
-                cumulative_energy[i, j] += min(
-                    cumulative_energy[i - 1, j - 1],
-                    cumulative_energy[i - 1, j],
-                    cumulative_energy[i - 1, j + 1],
-                )
+        left = np.roll(cumulative_energy[i - 1], 1)
+        # left[0] = np.inf replace with highest possible np.int16
+        left[0] = 2**15 - 1
+        right = np.roll(cumulative_energy[i - 1], -1)
+        right[-1] = 2**15 - 1
+        center = cumulative_energy[i - 1]
+        cumulative_energy[i] += np.minimum(center, np.minimum(left, right))
+        # for j in range(width):
+        #     # Find the minimum energy from the three pixels above
+        #     if j == 0:  # leftmost pixel
+        #         cumulative_energy[i, j] += min(
+        #             cumulative_energy[i - 1, j], cumulative_energy[i - 1, j + 1]
+        #         )
+        #     elif j == width - 1:  # rightmost pixel
+        #         cumulative_energy[i, j] += min(
+        #             cumulative_energy[i - 1, j - 1], cumulative_energy[i - 1, j]
+        #         )
+        #     else:
+        #         cumulative_energy[i, j] += min(
+        #             cumulative_energy[i - 1, j - 1],
+        #             cumulative_energy[i - 1, j],
+        #             cumulative_energy[i - 1, j + 1],
+        #         )
 
     # Transpose back if we're finding horizontal seams
     if direction == "horizontal":
@@ -342,7 +348,9 @@ def seam_carve(
         - A visualization of the removed seams
     """
     if target_width is None and target_height is None:
-        raise ValueError("Either target_width or target_height must be specified")
+        raise ValueError(
+            "At least one of target_width or target_heigt must be specified"
+        )
 
     # Create copies of the image to work with
     result = np.copy(image)
@@ -417,9 +425,20 @@ def seam_carve(
     return result, visualization
 
 
-def load_image(image_path) -> np.ndarray:
+def load_image(image_path) -> Tuple[np.ndarray, Tuple[int, int]]:
     img = Image.open(image_path)
-    return np.array(img)
+    # get original image dimensions
+    orig_dims = img.size
+    max_dim = max(img.size)
+    prefered_size = 800
+    if max_dim > prefered_size:
+        img = img.resize(
+            (
+                int(img.width * prefered_size / max_dim),
+                int(img.height * prefered_size / max_dim),
+            )
+        )
+    return np.array(img), orig_dims
 
 
 def save_image(image: np.ndarray, output_path: str) -> None:
