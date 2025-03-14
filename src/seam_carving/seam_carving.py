@@ -11,7 +11,6 @@ This module provides functions to:
 from typing import List, Optional, Tuple
 
 import numpy as np
-from PIL import Image
 
 
 def calculate_energy(image: np.ndarray) -> np.ndarray:
@@ -79,28 +78,11 @@ def compute_cumulative_energy_map(
     # Fill the cumulative energy map
     for i in range(1, height):
         left = np.roll(cumulative_energy[i - 1], 1)
-        # left[0] = np.inf replace with highest possible np.int16
         left[0] = 2**15 - 1
         right = np.roll(cumulative_energy[i - 1], -1)
         right[-1] = 2**15 - 1
         center = cumulative_energy[i - 1]
         cumulative_energy[i] += np.minimum(center, np.minimum(left, right))
-        # for j in range(width):
-        #     # Find the minimum energy from the three pixels above
-        #     if j == 0:  # leftmost pixel
-        #         cumulative_energy[i, j] += min(
-        #             cumulative_energy[i - 1, j], cumulative_energy[i - 1, j + 1]
-        #         )
-        #     elif j == width - 1:  # rightmost pixel
-        #         cumulative_energy[i, j] += min(
-        #             cumulative_energy[i - 1, j - 1], cumulative_energy[i - 1, j]
-        #         )
-        #     else:
-        #         cumulative_energy[i, j] += min(
-        #             cumulative_energy[i - 1, j - 1],
-        #             cumulative_energy[i - 1, j],
-        #             cumulative_energy[i - 1, j + 1],
-        #         )
 
     # Transpose back if we're finding horizontal seams
     if direction == "horizontal":
@@ -162,42 +144,6 @@ def find_optimal_seam(
         seam_idx = seam_idx[:, 0]  # The y-coordinates
 
     return seam_idx
-
-
-def find_seams(
-    image: np.ndarray, num_seams: int, direction: str = "vertical"
-) -> List[np.ndarray]:
-    """
-    Find multiple seams to remove from the image.
-
-    Args:
-        image: A numpy array representing the image (height, width, channels)
-        num_seams: Number of seams to find
-        direction: 'vertical' for vertical seams, 'horizontal' for horizontal seams
-
-    Returns:
-        A list of seams, where each seam is a 1D numpy array of indices
-    """
-    # Create a copy of the image to work with
-    working_image = np.copy(image)
-    seams = []
-
-    # For each seam we want to find
-    for _ in range(num_seams):
-        # Calculate energy
-        energy = calculate_energy(working_image)
-
-        # Compute cumulative energy
-        cumulative_energy = compute_cumulative_energy_map(energy, direction)
-
-        # Find optimal seam in current coordinates
-        seam = find_optimal_seam(cumulative_energy, direction)
-        seams.append(seam)
-
-        # Remove the seam for the next iteration
-        working_image = remove_seam(working_image, seam, direction)
-
-    return seams
 
 
 def remove_seam(
@@ -423,27 +369,3 @@ def seam_carve(
             result = remove_seam(result, seam, "horizontal")
 
     return result, visualization
-
-
-def load_image(image_path) -> Tuple[np.ndarray, Tuple[int, int]]:
-    img = Image.open(image_path)
-    # get original image dimensions
-    orig_dims = img.size
-    max_dim = max(img.size)
-    prefered_size = 800
-    if max_dim > prefered_size:
-        img = img.resize(
-            (
-                int(img.width * prefered_size / max_dim),
-                int(img.height * prefered_size / max_dim),
-            )
-        )
-    return np.array(img), orig_dims
-
-
-def save_image(image: np.ndarray, output_path: str) -> None:
-    if image.dtype != np.uint8:
-        image = image.astype(np.uint8)
-
-    img = Image.fromarray(image)
-    img.save(output_path)

@@ -9,11 +9,7 @@ from typing import Tuple
 
 import numpy as np
 
-from .seam_carving import (
-    load_image,
-    save_image,
-    seam_carve,
-)
+from seam_carving import load_image, save_image, seam_carve
 
 
 def parse_args() -> argparse.Namespace:

@@ -3,20 +3,14 @@
 Test the seam carving algorithm on a sample image.
 """
 
-import os
 import argparse
+import os
 import sys
-import numpy as np
-from PIL import Image
 
 # Add the src directory to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from src.seam_carving.seam_carving import (
-    load_image,
-    save_image,
-    seam_carve,
-)
+from seam_carving import load_image, save_image, seam_carve
 
 
 def parse_args() -> argparse.Namespace:
@@ -48,7 +42,7 @@ def main() -> None:
 
     # Load the input image
     print(f"Loading image: {args.input_image}")
-    image = load_image(args.input_image)
+    image, _ = load_image(args.input_image)
     height, width = image.shape[:2]
     print(f"Image dimensions: {width}x{height}")
 

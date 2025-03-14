@@ -6,7 +6,6 @@ import numpy as np
 
 from seam_carving import (
     calculate_energy,
-    find_seams,
     remove_seams,
     seam_carve,
 )
@@ -53,25 +52,6 @@ def test_seam_removal_horizontal():
 
     # Check that the result has one fewer row
     assert result.shape == (4, 5)
-
-
-def test_find_seams():
-    """Test finding multiple seams."""
-    # Create a simple test image with a gradient
-    image = np.zeros((10, 10), dtype=np.uint8)
-    for i in range(10):
-        for j in range(10):
-            image[i, j] = abs(j - 5)  # Make middle column lowest energy
-
-    # Find 3 vertical seams
-    seams = find_seams(image, 3, direction="vertical")
-
-    # Check that we got 3 seams
-    assert len(seams) == 3
-
-    # Each seam should have 10 elements (one for each row)
-    for seam in seams:
-        assert len(seam) == 10
 
 
 def test_seam_carve_resize():
