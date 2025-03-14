@@ -5,10 +5,11 @@ Performance Optimization Examples for Seam Carving
 This script demonstrates performance optimizations for the seam carving algorithm.
 """
 
-import os
 import argparse
+import os
 import sys
 import time
+
 import numpy as np
 from PIL import Image
 
@@ -16,13 +17,13 @@ from PIL import Image
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.seam_carving.seam_carving import (
-    load_image,
-    save_image,
-    seam_carve,
     calculate_energy,
     compute_cumulative_energy_map,
     find_optimal_seam,
+    load_image,
     remove_seam,
+    save_image,
+    seam_carve,
 )
 
 
@@ -51,8 +52,8 @@ def parse_args() -> argparse.Namespace:
 
 def optimized_seam_carving(
     image: np.ndarray,
-    target_width: int = None,
-    target_height: int = None,
+    target_width: "int | None" = None,
+    target_height: "int | None " = None,
 ) -> tuple:
     """
     Optimized seam carving function.

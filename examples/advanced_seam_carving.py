@@ -9,12 +9,10 @@ This script demonstrates more advanced usages of the seam carving algorithm:
 4. Performance measurement
 """
 
-import os
 import argparse
+import os
 import sys
 import time
-import numpy as np
-from PIL import Image
 
 # Add the src directory to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))

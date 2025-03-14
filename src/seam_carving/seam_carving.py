@@ -8,9 +8,10 @@ This module provides functions to:
 4. Visualize the seams that were removed
 """
 
+from typing import List, Optional, Tuple
+
 import numpy as np
 from PIL import Image
-from typing import List, Tuple, Union, Optional
 
 
 def calculate_energy(image: np.ndarray) -> np.ndarray:
@@ -30,25 +31,24 @@ def calculate_energy(image: np.ndarray) -> np.ndarray:
     else:
         gray_image = image
 
-    height, width = gray_image.shape[:2]
-    energy = np.zeros((height, width), dtype=np.float64)
-
+    gray_image = gray_image.astype(np.int32)
     # Calculate x gradient using forward and backward differences at the edges
     # and central differences elsewhere
     grad_x = np.zeros_like(gray_image)
-    grad_x[:, 1:-1] = abs(gray_image[:, 2:] - gray_image[:, :-2]) / 2
-    grad_x[:, 0] = abs(gray_image[:, 1] - gray_image[:, 0])
-    grad_x[:, -1] = abs(gray_image[:, -1] - gray_image[:, -2])
+    grad_x[:, 1:-1] = np.abs(gray_image[:, 2:] - gray_image[:, :-2]) / 2
+    grad_x[:, 0] = np.abs(gray_image[:, 1] - gray_image[:, 0])
+    grad_x[:, -1] = np.abs(gray_image[:, -1] - gray_image[:, -2])
 
     # Calculate y gradient using forward and backward differences at the edges
     # and central differences elsewhere
     grad_y = np.zeros_like(gray_image)
-    grad_y[1:-1, :] = abs(gray_image[2:, :] - gray_image[:-2, :]) / 2
-    grad_y[0, :] = abs(gray_image[1, :] - gray_image[0, :])
-    grad_y[-1, :] = abs(gray_image[-1, :] - gray_image[-2, :])
-
+    grad_y[1:-1, :] = np.abs(gray_image[2:, :] - gray_image[:-2, :]) / 2
+    grad_y[0, :] = np.abs(gray_image[1, :] - gray_image[0, :])
+    grad_y[-1, :] = np.abs(gray_image[-1, :] - gray_image[-2, :])
+    assert grad_x.shape == grad_y.shape
+    assert grad_x.shape == gray_image.shape
     # Energy is the sum of the absolute values of the x and y gradients
-    energy = abs(grad_x) + abs(grad_y)
+    energy = np.abs(grad_x) + np.abs(grad_y)
 
     return energy
 
@@ -417,28 +417,12 @@ def seam_carve(
     return result, visualization
 
 
-def load_image(image_path: str) -> np.ndarray:
-    """
-    Load an image from a file path to a numpy array.
-
-    Args:
-        image_path: Path to the image file
-
-    Returns:
-        A numpy array representing the image (height, width, channels)
-    """
+def load_image(image_path) -> np.ndarray:
     img = Image.open(image_path)
     return np.array(img)
 
 
 def save_image(image: np.ndarray, output_path: str) -> None:
-    """
-    Save a numpy array as an image.
-
-    Args:
-        image: A numpy array representing the image
-        output_path: Path to save the image to
-    """
     if image.dtype != np.uint8:
         image = image.astype(np.uint8)
 

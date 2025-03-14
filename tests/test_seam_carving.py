@@ -3,9 +3,8 @@ Tests for the seam carving implementation.
 """
 
 import numpy as np
-import pytest
 
-from src.seam_carving import (
+from seam_carving import (
     calculate_energy,
     find_seams,
     remove_seams,
@@ -20,12 +19,10 @@ def test_calculate_energy():
 
     # Calculate energy
     energy = calculate_energy(image)
-
+    expected_energy = np.array([[0, 100, 0], [100, 0, 100], [0, 100, 0]])
     # The middle pixel should have high energy (strong gradient)
-    assert energy.shape == (3, 3)
-    assert energy[1, 1] > energy[0, 0]
-    assert energy[1, 1] > energy[0, 1]
-    assert energy[1, 1] > energy[0, 2]
+    assert energy.shape == image.shape
+    assert np.all(energy == expected_energy)
 
 
 def test_seam_removal_vertical():

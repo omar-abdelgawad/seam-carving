@@ -8,34 +8,27 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "seam-carving"
 dynamic = ["version"]
-dependencies = [
-    "numpy",
-    "pillow",
-    ]
+dependencies = ["numpy", "pillow"]
 requires-python = ">=3.8"
-authors = [
-  {name = "Student Name", email = "student@example.com"},
-]
+authors = [{ name = "Student Name", email = "student@example.com" }]
 description = "Seam carving algorithm for content-aware image resizing"
 readme = "README.md"
-license = {file = "LICENSE"}
-keywords = ["seam-carving", "image-processing", "image-resizing", "content-aware"]
+license = { file = "LICENSE" }
+keywords = [
+  "seam-carving",
+  "image-processing",
+  "image-resizing",
+  "content-aware",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10"
+  "Programming Language :: Python :: 3.10",
 ]
 
 [project.optional-dependencies]
-dev = [
-    "mypy",
-    "ruff",
-    "pytest",
-    "pytest-cov",
-    "tox",
-    "pre-commit",
-]
+dev = ["mypy", "ruff", "pytest", "pytest-cov", "tox", "pre-commit"]
 
 [tool.setuptools.package-data]
 seam_carving = ["py.typed"]
@@ -46,9 +39,7 @@ Repository = "https://github.com/student/seam-carving.git"
 ###################################################################################################
 [tool.pytest.ini_options]
 addopts = "--cov=seam_carving"
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
 
 [tool.mypy]
 mypy_path = "src"
@@ -68,8 +59,4 @@ no_implicit_reexport = true
 src = ["src"]
 
 [tool.ruff.lint]
-extend-select = ["UP","I"]
-
-# version set in a separate file
-[tool.setuptools.dynamic]
-version = {attr = "seam_carving.__version__"}
+extend-select = ["UP", "I"]
