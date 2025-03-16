@@ -72,7 +72,8 @@ def compute_cumulative_energy_map(
         energy = energy.T
 
     height, width = energy.shape
-    cumulative_energy = np.copy(energy)
+    # cumulative_energy = np.copy(energy)
+    cumulative_energy = energy
 
     # Fill the cumulative energy map
     for i in range(1, height):
@@ -82,6 +83,23 @@ def compute_cumulative_energy_map(
         right[-1] = 2**15 - 1
         center = cumulative_energy[i - 1]
         cumulative_energy[i] += np.minimum(center, np.minimum(left, right))
+        # for j in range(width):
+        #     if j == 0:
+        #         cumulative_energy[i, j] += np.min(
+        #             [cumulative_energy[i - 1, j], cumulative_energy[i - 1, j + 1]]
+        #         )
+        #     elif j == width - 1:
+        #         cumulative_energy[i, j] += np.min(
+        #             [cumulative_energy[i - 1, j - 1], cumulative_energy[i - 1, j]]
+        #         )
+        #     else:
+        #         cumulative_energy[i, j] += np.min(
+        #             [
+        #                 cumulative_energy[i - 1, j - 1],
+        #                 cumulative_energy[i - 1, j],
+        #                 cumulative_energy[i - 1, j + 1],
+        #             ]
+        #         )
     # Transpose back if we're finding horizontal seams
     if direction == "horizontal":
         cumulative_energy = cumulative_energy.T
