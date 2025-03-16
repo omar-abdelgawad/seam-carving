@@ -58,7 +58,7 @@ The above command will:
 
 ### Profiling
 ```bash
-python3 profile_1.py examples/images/landscape.jpg output/landscape_resized.jpg --width 600 --height 500 --vis_output output/landscape_seams.jpg
+python3 profile_main.py examples/images/landscape.jpg output/landscape_resized.jpg --width 600 --height 500 --vis_output output/landscape_seams.jpg
 ```
 
 ### Additional Options
