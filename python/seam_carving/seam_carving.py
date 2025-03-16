@@ -11,13 +11,14 @@ This module provides functions to:
 from typing import List, Optional, Tuple
 
 import numpy as np
+from numba import jit
 
 
 def calculate_energy(image: np.ndarray) -> np.ndarray:
     """
     Calculate the energy of an image using gradient magnitude.
     Args:
-        image: A numpy array representing the image (height, width, channels)
+        image: the image (height, width, channels)
     Returns:
         A 2D numpy array representing the energy at each pixel
     """
@@ -29,6 +30,12 @@ def calculate_energy(image: np.ndarray) -> np.ndarray:
         gray_image = image
 
     gray_image = gray_image.astype(np.int16)
+    energy = calculate_energy_np(gray_image)
+    return energy
+
+
+# @jit # for some reason this jit makes function slower
+def calculate_energy_np(gray_image: np.ndarray) -> np.ndarray:
     # Calculate x gradient using forward and backward differences at the edges
     # and central differences elsewhere
     grad_x = np.zeros_like(gray_image)
@@ -42,14 +49,10 @@ def calculate_energy(image: np.ndarray) -> np.ndarray:
     grad_y[1:-1, :] = np.abs(gray_image[2:, :] - gray_image[:-2, :]) / 2
     grad_y[0, :] = np.abs(gray_image[1, :] - gray_image[0, :])
     grad_y[-1, :] = np.abs(gray_image[-1, :] - gray_image[-2, :])
-    assert grad_x.shape == grad_y.shape
-    assert grad_x.shape == gray_image.shape
-    # Energy is the sum of the absolute values of the x and y gradients
-    energy = np.abs(grad_x) + np.abs(grad_y)
-
-    return energy
+    return np.abs(grad_x) + np.abs(grad_y)
 
 
+# @jit
 def compute_cumulative_energy_map(
     energy: np.ndarray, direction: str = "vertical"
 ) -> np.ndarray:
@@ -76,6 +79,16 @@ def compute_cumulative_energy_map(
     cumulative_energy = energy
 
     # Fill the cumulative energy map
+    fill_cum_array_numba(cumulative_energy, height, width)
+
+    if direction == "horizontal":
+        cumulative_energy = cumulative_energy.T
+
+    return cumulative_energy
+
+
+@jit
+def fill_cum_array(cumulative_energy, height, width):
     for i in range(1, height):
         left = np.roll(cumulative_energy[i - 1], 1)
         left[0] = 2**15 - 1
@@ -83,27 +96,21 @@ def compute_cumulative_energy_map(
         right[-1] = 2**15 - 1
         center = cumulative_energy[i - 1]
         cumulative_energy[i] += np.minimum(center, np.minimum(left, right))
-        # for j in range(width):
-        #     if j == 0:
-        #         cumulative_energy[i, j] += np.min(
-        #             [cumulative_energy[i - 1, j], cumulative_energy[i - 1, j + 1]]
-        #         )
-        #     elif j == width - 1:
-        #         cumulative_energy[i, j] += np.min(
-        #             [cumulative_energy[i - 1, j - 1], cumulative_energy[i - 1, j]]
-        #         )
-        #     else:
-        #         cumulative_energy[i, j] += np.min(
-        #             [
-        #                 cumulative_energy[i - 1, j - 1],
-        #                 cumulative_energy[i - 1, j],
-        #                 cumulative_energy[i - 1, j + 1],
-        #             ]
-        #         )
-    # Transpose back if we're finding horizontal seams
-    if direction == "horizontal":
-        cumulative_energy = cumulative_energy.T
+    return cumulative_energy
 
+
+@jit(nopython=True)
+def fill_cum_array_numba(cumulative_energy, height, width):
+    for i in range(1, height):
+        for j in range(0, width):
+            # Handle the left edge of the image, to ensure we don't index -1
+            if j == 0:
+                idx = np.argmin(cumulative_energy[i - 1, j : j + 2])
+                min_energy = cumulative_energy[i - 1, idx + j]
+            else:
+                idx = np.argmin(cumulative_energy[i - 1, j - 1 : j + 2])
+                min_energy = cumulative_energy[i - 1, idx + j - 1]
+            cumulative_energy[i, j] += min_energy
     return cumulative_energy
 
 

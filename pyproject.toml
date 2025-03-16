@@ -10,7 +10,7 @@ where = [
 [project]
 name = "seam-carving"
 dynamic = ["version"]
-dependencies = ["numpy", "pillow"]
+dependencies = ["numpy", "pillow", "numba"]
 requires-python = ">=3.8"
 authors = [{ name = "Student Name", email = "student@example.com" }]
 description = "Seam carving algorithm for content-aware image resizing"
